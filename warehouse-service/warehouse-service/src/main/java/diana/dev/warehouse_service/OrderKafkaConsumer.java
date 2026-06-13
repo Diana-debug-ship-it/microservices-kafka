@@ -1,5 +1,6 @@
 package diana.dev.warehouse_service;
 
+import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -12,7 +13,8 @@ public class OrderKafkaConsumer {
 
 
     @KafkaListener(topics = "orders")
-    public void consumeOrder(Order order) {
-        log.info("Received order: order={}", order);
+    public void consumeOrder(ConsumerRecord<String, Order> record) {
+
+        log.info("Received order: order={}, key={}, partition={}", record.value(), record.key(), record.partition());
     }
 }
