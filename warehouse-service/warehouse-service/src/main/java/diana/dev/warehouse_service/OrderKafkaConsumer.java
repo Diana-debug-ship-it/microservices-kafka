@@ -10,11 +10,15 @@ import org.springframework.stereotype.Service;
 public class OrderKafkaConsumer {
 
     private static final Logger log = LoggerFactory.getLogger(OrderKafkaConsumer.class);
+    private final WarehouseService warehouseService;
 
+    public OrderKafkaConsumer(WarehouseService warehouseService) {
+        this.warehouseService = warehouseService;
+    }
 
     @KafkaListener(topics = "orders")
     public void consumeOrder(ConsumerRecord<String, Order> record) {
-
         log.info("Received order: order={}, key={}, partition={}", record.value(), record.key(), record.partition());
+        warehouseService.processOrder(record.value());
     }
 }
