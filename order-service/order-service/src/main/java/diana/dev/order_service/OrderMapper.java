@@ -19,4 +19,16 @@ public class OrderMapper {
         entity.setQuantity(order.quantity());
         return entity;
     }
+
+    public static OrderResponse toResponse(OrderEntity entity) {
+        return new OrderResponse(
+                entity.getId(),
+                entity.getProductId(),
+                entity.getQuantity(),
+                entity.getStatus(),
+                entity.getTotalPrice(),
+                entity.getCreatedAt(),
+                entity.getUpdatedAt()
+        );
+    }
 }

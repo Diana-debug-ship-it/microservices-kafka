@@ -16,7 +16,7 @@ public class OrderKafkaProducer {
     }
 
     public void sendOrderToKafka(Order order) {
-        kafkaTemplate.send("orders", order.orderId(), order);
+        kafkaTemplate.send("orders", order.orderId().toString(), order);
         log.info("Order sent to kafka: id={}", order.orderId());
     }
 
