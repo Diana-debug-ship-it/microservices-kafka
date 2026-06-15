@@ -1,6 +1,6 @@
-package diana.dev.warehouse_service;
+package diana.dev.order_service.configuration;
 
-
+import diana.dev.order_service.dto.Order;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.context.annotation.Bean;
@@ -19,13 +19,13 @@ import java.util.Map;
 public class KafkaProducerConfig {
 
     @Bean
-    public ProducerFactory<String, OrderStatusMessage> producerFactory(
+    public ProducerFactory<String, Order> producerFactory(
             ObjectMapper objectMapper
     ) {
         Map<String, Object> configProperties = new HashMap<>();
         configProperties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
 
-        JacksonJsonSerializer<OrderStatusMessage> serializer = new JacksonJsonSerializer<>((JsonMapper) objectMapper);
+        JacksonJsonSerializer<Order> serializer = new JacksonJsonSerializer<>((JsonMapper) objectMapper);
         serializer.setAddTypeInfo(false);
 
         return new DefaultKafkaProducerFactory<>(
@@ -36,10 +36,9 @@ public class KafkaProducerConfig {
     }
 
     @Bean
-    public KafkaTemplate<String, OrderStatusMessage> kafkaTemplate(
-            ProducerFactory<String, OrderStatusMessage> producerFactory
+    public KafkaTemplate<String, Order> kafkaTemplate(
+            ProducerFactory<String, Order> producerFactory
     ) {
         return new KafkaTemplate<>(producerFactory);
     }
-
 }

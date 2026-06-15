@@ -1,5 +1,6 @@
-package diana.dev.warehouse_service;
+package diana.dev.warehouse_service.kafka.producer;
 
+import diana.dev.warehouse_service.dto.OrderStatusMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.kafka.core.KafkaTemplate;

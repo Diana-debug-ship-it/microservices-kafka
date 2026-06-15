@@ -1,4 +1,4 @@
-package diana.dev.warehouse_service;
+package diana.dev.warehouse_service.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

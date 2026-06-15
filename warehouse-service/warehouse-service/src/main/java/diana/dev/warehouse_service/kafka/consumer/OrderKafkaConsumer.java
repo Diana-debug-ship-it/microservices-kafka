@@ -1,5 +1,7 @@
-package diana.dev.warehouse_service;
+package diana.dev.warehouse_service.kafka.consumer;
 
+import diana.dev.warehouse_service.dto.Order;
+import diana.dev.warehouse_service.service.WarehouseService;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

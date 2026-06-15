@@ -1,4 +1,4 @@
-package diana.dev.order_service;
+package diana.dev.order_service.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

@@ -1,6 +1,8 @@
-package diana.dev.order_service;
+package diana.dev.order_service.kafka.consumer;
 
 
+import diana.dev.order_service.dto.OrderStatusMessage;
+import diana.dev.order_service.service.OrderService;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

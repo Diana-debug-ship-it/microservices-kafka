@@ -1,4 +1,4 @@
-package diana.dev.order_service;
+package diana.dev.warehouse_service.dto;
 
 public record OrderStatusMessage(
         String orderId,

@@ -1,5 +1,10 @@
-package diana.dev.warehouse_service;
+package diana.dev.warehouse_service.service;
 
+import diana.dev.warehouse_service.dto.Order;
+import diana.dev.warehouse_service.dto.OrderStatusMessage;
+import diana.dev.warehouse_service.entity.ProductEntity;
+import diana.dev.warehouse_service.kafka.producer.OrderStatusKafkaProducer;
+import diana.dev.warehouse_service.repository.ProductRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;

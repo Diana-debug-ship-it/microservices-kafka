@@ -1,5 +1,8 @@
-package diana.dev.order_service;
+package diana.dev.order_service.controller;
 
+import diana.dev.order_service.dto.Order;
+import diana.dev.order_service.dto.OrderResponse;
+import diana.dev.order_service.service.OrderService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;

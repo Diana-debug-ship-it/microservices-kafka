@@ -1,6 +1,8 @@
-package diana.dev.order_service;
+package diana.dev.order_service.mapper;
 
-import java.time.LocalDateTime;
+import diana.dev.order_service.dto.Order;
+import diana.dev.order_service.entity.OrderEntity;
+import diana.dev.order_service.dto.OrderResponse;
 
 public class OrderMapper {
 

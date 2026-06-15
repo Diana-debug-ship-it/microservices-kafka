@@ -1,10 +1,8 @@
-package diana.dev.order_service;
+package diana.dev.order_service.dto;
 
-import jakarta.validation.constraints.FutureOrPresent;
+import diana.dev.order_service.entity.OrderStatus;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Null;
-
-import java.time.LocalDateTime;
 
 public record Order(
         @Null

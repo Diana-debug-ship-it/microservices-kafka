@@ -1,5 +1,13 @@
-package diana.dev.order_service;
+package diana.dev.order_service.service;
 
+import diana.dev.order_service.dto.Order;
+import diana.dev.order_service.dto.OrderResponse;
+import diana.dev.order_service.dto.OrderStatusMessage;
+import diana.dev.order_service.entity.OrderEntity;
+import diana.dev.order_service.entity.OrderStatus;
+import diana.dev.order_service.kafka.producer.OrderKafkaProducer;
+import diana.dev.order_service.mapper.OrderMapper;
+import diana.dev.order_service.repository.OrderRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;

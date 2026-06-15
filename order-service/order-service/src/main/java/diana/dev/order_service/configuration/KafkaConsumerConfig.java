@@ -1,5 +1,7 @@
-package diana.dev.warehouse_service;
+package diana.dev.order_service.configuration;
 
+
+import diana.dev.order_service.dto.OrderStatusMessage;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.context.annotation.Bean;
@@ -20,14 +22,14 @@ import java.util.Map;
 public class KafkaConsumerConfig {
 
     @Bean
-    public ConsumerFactory<String, Order> consumerFactory(
+    public ConsumerFactory<String, OrderStatusMessage> consumerFactory(
             ObjectMapper objectMapper
     ) {
         Map<String, Object> properties = new HashMap<>();
         properties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
-        properties.put(ConsumerConfig.GROUP_ID_CONFIG, "warehouse-group");
+        properties.put(ConsumerConfig.GROUP_ID_CONFIG, "order-group");
 
-        JacksonJsonDeserializer<Order> jsonDeserializer = new JacksonJsonDeserializer<>(Order.class, (JsonMapper) objectMapper);
+        JacksonJsonDeserializer<OrderStatusMessage> jsonDeserializer = new JacksonJsonDeserializer<>(OrderStatusMessage.class, (JsonMapper) objectMapper);
 
         return new DefaultKafkaConsumerFactory<>(
                 properties,
@@ -37,12 +39,13 @@ public class KafkaConsumerConfig {
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, Order> kafkaListenerContainerFactory(
-            ConsumerFactory<String, Order> consumerFactory
+    public ConcurrentKafkaListenerContainerFactory<String, OrderStatusMessage> kafkaListenerContainerFactory(
+            ConsumerFactory<String, OrderStatusMessage> consumerFactory
     ) {
-        var containerFactory = new ConcurrentKafkaListenerContainerFactory<String, Order>();
+        var containerFactory = new ConcurrentKafkaListenerContainerFactory<String, OrderStatusMessage>();
         containerFactory.setConcurrency(1);
         containerFactory.setConsumerFactory(consumerFactory);
         return containerFactory;
     }
+
 }

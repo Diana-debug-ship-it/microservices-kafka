@@ -1,4 +1,6 @@
-package diana.dev.order_service;
+package diana.dev.order_service.dto;
+
+import diana.dev.order_service.entity.OrderStatus;
 
 import java.time.LocalDateTime;
 

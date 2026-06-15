@@ -1,4 +1,4 @@
-package diana.dev.warehouse_service;
+package diana.dev.warehouse_service.dto;
 
 public record Order(
         Long orderId,
