@@ -3,6 +3,7 @@ package diana.dev.order_service.controller;
 import diana.dev.order_service.dto.Order;
 import diana.dev.order_service.dto.OrderResponse;
 import diana.dev.order_service.service.OrderService;
+import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -23,7 +24,7 @@ public class OrderController {
     }
 
     @PostMapping
-    public ResponseEntity<OrderResponse> createOrder(@RequestBody Order order) {
+    public ResponseEntity<OrderResponse> createOrder(@RequestBody @Valid Order order) {
         log.info("Called createOrder: order={}", order);
         return ResponseEntity.status(HttpStatus.CREATED).body(orderService.saveOrder(order));
     }
