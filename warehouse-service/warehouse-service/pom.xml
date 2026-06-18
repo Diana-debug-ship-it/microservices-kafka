@@ -159,6 +159,34 @@
 					</execution>
 				</executions>
 			</plugin>
+
+			<!-- 1. Плагин, который автоматически найдет путь к jar-файлу Mockito в вашем репозитории -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>3.6.1</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>properties</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- 2. Настройка плагина Surefire для запуска тестов с агентом Mockito -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>3.2.5</version>
+				<configuration>
+					<argLine>
+						-javaagent:${org.mockito:mockito-core:jar}
+						-Xshare:off
+					</argLine>
+				</configuration>
+			</plugin>
+
 		</plugins>
 	</build>
 

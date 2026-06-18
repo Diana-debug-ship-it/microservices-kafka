@@ -23,7 +23,7 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 
 @WebMvcTest(OrderController.class)
-public class OrderControllerTest {
+class OrderControllerTest {
 
     @MockitoBean
     private OrderService orderService;
@@ -43,7 +43,7 @@ public class OrderControllerTest {
     }
 
     @Test
-    public void getAllOrders_ShouldReturnListOfOrders() throws Exception {
+    void getAllOrders_ShouldReturnListOfOrders_WhenOrdersExist() throws Exception {
 
         OrderResponse order1 = new OrderResponse(1L, 2L, 10, OrderStatus.CREATED, 5000.0, LocalDateTime.now(), null);
         OrderResponse order2 = new OrderResponse(2L, 5L, 10, OrderStatus.CREATED, 5000.0, LocalDateTime.now(), null);
@@ -61,7 +61,7 @@ public class OrderControllerTest {
     }
 
     @Test
-    public void getOrderById_ShouldReturnOrderResponse() throws Exception {
+    void getOrderById_ShouldReturnOrderResponse_WhenOrderExists() throws Exception {
         Long id = 5L;
         OrderResponse order = new OrderResponse(id, 2L, 10, OrderStatus.CREATED, 5000.0, LocalDateTime.now(), null);
 
@@ -75,7 +75,7 @@ public class OrderControllerTest {
     }
 
     @Test
-    public void getOrderById_ThrowEntityNotFoundException_WhenOrderNotFound() throws Exception {
+    void getOrderById_ShouldThrowEntityNotFoundException_WhenOrderNotFound() throws Exception {
         Long id = 5L;
 
         doThrow(new EntityNotFoundException("Order not found")).when(orderService).findOrderById(id);
@@ -85,7 +85,7 @@ public class OrderControllerTest {
     }
 
     @Test
-    public void createOrder_ShouldReturnOrderWithGeneratedId() throws Exception {
+    void createOrder_ShouldReturnOrderWithGeneratedId_WhenOrderIsValid() throws Exception {
         Long id = 5L;
         Order orderToSave = new Order(null, 2L, 10, null);
         OrderResponse savedOrder = new OrderResponse(id, 2L, 10, OrderStatus.CREATED, null, LocalDateTime.now(), null);
@@ -101,7 +101,7 @@ public class OrderControllerTest {
     }
 
     @Test
-    public void createOrder_ShouldReturnBadRequest_WhenIdNotNull() throws Exception {
+    void createOrder_ShouldReturnBadRequest_WhenIdNotNull() throws Exception {
         Order orderToSave = new Order(1L, 2L, 10, null);
 
         String orderJson = objectMapper.writeValueAsString(orderToSave);
@@ -115,7 +115,7 @@ public class OrderControllerTest {
     }
 
     @Test
-    public void createOrder_ShouldReturnBadRequest_WhenStatusIsNotNull() throws Exception {
+    void createOrder_ShouldReturnBadRequest_WhenStatusIsNotNull() throws Exception {
         Order orderToSave = new Order(null, 2L, 10, OrderStatus.CREATED);
 
         String orderJson = objectMapper.writeValueAsString(orderToSave);
@@ -129,7 +129,7 @@ public class OrderControllerTest {
     }
 
     @Test
-    public void createOrder_ShouldReturnBadRequest_WhenQuantityIsNull() throws Exception {
+    void createOrder_ShouldReturnBadRequest_WhenQuantityIsNull() throws Exception {
         Order orderToSave = new Order(null, 2L, null, null);
 
         String orderJson = objectMapper.writeValueAsString(orderToSave);
@@ -143,7 +143,7 @@ public class OrderControllerTest {
     }
 
     @Test
-    public void createOrder_ShouldReturnBadRequest_WhenQuantityIs0() throws Exception {
+    void createOrder_ShouldReturnBadRequest_WhenQuantityIs0() throws Exception {
         Order orderToSave = new Order(null, 2L, 0, null);
 
         String orderJson = objectMapper.writeValueAsString(orderToSave);
