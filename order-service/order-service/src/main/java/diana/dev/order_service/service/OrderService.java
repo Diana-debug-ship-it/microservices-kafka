@@ -24,10 +24,12 @@ public class OrderService {
 
     private final OrderKafkaProducer orderKafkaProducer;
     private final OrderRepository repository;
+    private final OrderNotificationService notificationService;
 
-    public OrderService(OrderKafkaProducer orderKafkaProducer, OrderRepository orderRepository) {
+    public OrderService(OrderKafkaProducer orderKafkaProducer, OrderRepository orderRepository, OrderNotificationService notificationService) {
         this.orderKafkaProducer = orderKafkaProducer;
         this.repository = orderRepository;
+        this.notificationService = notificationService;
     }
 
     public OrderResponse saveOrder(Order orderToSave) {
@@ -75,8 +77,11 @@ public class OrderService {
         orderEntity.setUpdatedAt(LocalDateTime.now());
         orderEntity.setTotalPrice(msg.totalPrice());
 
-        repository.save(orderEntity);
+        OrderEntity entity = repository.save(orderEntity);
+        OrderResponse responseDto = OrderMapper.toResponse(entity);
         log.info("Order {} successfully updated to status {}", id, msg.status());
+
+        notificationService.sendOrderUpdate(responseDto);
     }
 
     private boolean checkQuantity(int quantity) {
@@ -96,6 +101,13 @@ public class OrderService {
     public List<OrderResponse> findAllOrders() {
 
         List<OrderEntity> orders = repository.findAll();
+        return orders.stream().map(OrderMapper::toResponse).toList();
+
+    }
+
+    public List<OrderResponse> findAllOrdersDESC() {
+
+        List<OrderEntity> orders = repository.findAllByOrderByIdDesc();
         return orders.stream().map(OrderMapper::toResponse).toList();
 
     }

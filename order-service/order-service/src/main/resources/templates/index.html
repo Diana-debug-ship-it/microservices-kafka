@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org" lang="ru">
+<head>
+    <link rel="icon" href="data:,">
+    <meta charset="UTF-8">
+    <title>Мониторинг заказов</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6;
+            margin: 0;
+            padding: 40px;
+            color: #333;
+        }
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 25px;
+            border-bottom: 2px solid #ecf0f1;
+            padding-bottom: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 14px;
+        }
+        th {
+            background-color: #f8fafc;
+            color: #64748b;
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 0.5px;
+        }
+        .badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .status-created { background-color: #e0f2fe; color: #0369a1; }
+        .status-approved { background-color: #dcfce7; color: #15803d; }
+        .status-rejected { background-color: #fee2e2; color: #b91c1c; }
+
+        .pulse {
+            animation: pulse-animation 1s ease-out;
+        }
+        @keyframes pulse-animation {
+            0% { background-color: #fef08a; }
+            100% { background-color: transparent; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>📊 Диспетчерская панель заказов</h1>
+    <p>Режим: <strong>Оператор</strong> | Ожидание системных событий из Kafka...</p>
+
+    <table id="ordersTable">
+        <thead>
+        <tr>
+            <th>ID Заказа</th>
+            <th>ID Товара</th>
+            <th>Количество</th>
+            <th>Сумма (руб)</th>
+            <th>Статус</th>
+            <th>Создан</th>
+            <th>Обновлен</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- Рендеринг истории из базы данных при загрузке страницы -->
+        <tr th:each="order : ${initialOrders}" th:id="'order-row-' + ${order.id()}">
+            <td th:text="'#' + ${order.id()}">#1</td>
+            <td th:text="${order.productId() != null ? order.productId() : '—'}">—</td>
+            <td th:text="${order.quantity()}">0</td>
+            <td th:text="${order.totalPrice() != null ? #numbers.formatDecimal(order.totalPrice(), 1, 2) : '—'}">—</td>
+            <td>
+                <span th:text="${order.status()}"
+                        th:class="'badge ' + ${order.status().name() == 'CREATED' ? 'status-created' : (order.status().name() == 'APPROVED' ? 'status-approved' : 'status-rejected')}">
+                            STATUS
+                </span>
+            </td>
+            <!-- Красиво форматируем дату создания в Java -->
+            <td th:text="${order.createdAt() != null ? #temporals.format(order.createdAt(), 'dd.MM.yyyy, HH:mm:ss') : '—'}">—</td>
+            <!-- Красиво форматируем дату обновления в Java -->
+            <td th:id="'order-updated-' + ${order.id()}"
+                th:text="${order.updatedAt() != null ? #temporals.format(order.updatedAt(), 'dd.MM.yyyy, HH:mm:ss') : '—'}">—</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<script>
+    const eventSource = new EventSource('/orders/stream');
+
+    eventSource.addEventListener('order-update', function(event) {
+        const order = JSON.parse(event.data);
+
+        let row = document.getElementById("order-row-" + order.id);
+        const isNewOrder = !row;
+
+        if (isNewOrder) {
+            const tableBody = document.getElementById("ordersTable").getElementsByTagName('tbody')[0];
+            row = tableBody.insertRow(0);
+            row.id = "order-row-" + order.id;
+        }
+
+        row.className = "pulse";
+
+        // Хелпер для форматирования даты в JavaScript
+        const formatDate = (dateStr) => {
+            if (!dateStr) return '—';
+            return new Date(dateStr).toLocaleString('ru-RU');
+        };
+
+        row.innerHTML = `
+            <td>#${order.id}</td>
+            <td>${order.productId || '—'}</td>
+            <td>${order.quantity}</td>
+            <td>${order.totalPrice ? order.totalPrice.toFixed(2) : '—'}</td>
+            <td><span class="badge ${getBadgeClass(order.status)}">${order.status}</span></td>
+            <td>${formatDate(order.createdAt)}</td>
+            <td>${formatDate(order.updatedAt)}</td>
+        `;
+    });
+
+    function getBadgeClass(status) {
+        if (status === 'CREATED') return 'status-created';
+        if (status === 'APPROVED') return 'status-approved';
+        if (status === 'REJECTED') return 'status-rejected';
+        return '';
+    }
+</script>
+</body>
+</html>
